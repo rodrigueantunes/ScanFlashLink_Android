@@ -27,7 +27,7 @@ ScanFlashLink est une application Android permettant de scanner des codes-barres
 
 1. **Clonez ce dépôt** :
    ```sh
-   git clone https://github.com/votre-repo/ScanFlashLink.git
+   git clone https://github.com/rodrigueantunes/ScanFlashLink_Android/blob/main/ScanFlashLink.git
    ```
 2. **Ouvrez le projet avec Android Studio**.
 3. **Compilez et exécutez** sur un appareil ou un émulateur.
