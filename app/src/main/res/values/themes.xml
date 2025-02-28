@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.ScanFlashLink" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Couleur principale : un bleu pastel moderne -->
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="colorPrimaryVariant">@color/blue_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Couleur secondaire : un gris clair doux -->
+        <item name="colorSecondary">@color/gray_200</item>
+        <item name="colorSecondaryVariant">@color/gray_400</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Statut et navigation bar : gris foncé subtil -->
+        <item name="android:statusBarColor">@color/blue_700</item>
+        <item name="android:navigationBarColor">@color/blue_500</item>
+    </style>
+</resources>

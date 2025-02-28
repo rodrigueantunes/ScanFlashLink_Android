@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@color/backgroundColor">
+
+    <!-- Titre du scan -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Scan effectué"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/textColor"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- Encadrement de l’image avec MaterialCardView -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginBottom="18dp"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="5dp"
+        app:strokeColor="@color/cardBorderColor"
+        app:strokeWidth="1dp"
+        android:backgroundTint="@color/cardBackground">
+
+        <ImageView
+            android:id="@+id/scannedImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Bouton moderne Material Design -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnOk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:textAllCaps="false"
+        android:paddingVertical="12dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:cornerRadius="14dp"
+        android:backgroundTint="@color/buttonColor"
+        android:textColor="@color/white"
+        app:rippleColor="@color/rippleEffect"/>
+</LinearLayout>

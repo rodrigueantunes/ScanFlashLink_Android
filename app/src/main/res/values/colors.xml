@@ -1,0 +1,24 @@
+<resources>
+    <!-- Couleurs par défaut de Material Design -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Palette sobre et moderne -->
+    <color name="backgroundColor">#F8F9FA</color>  <!-- Fond gris clair -->
+    <color name="textColor">#212121</color>  <!-- Noir/gris foncé pour le texte -->
+    <color name="hintColor">#9E9E9E</color>  <!-- Gris doux pour placeholders -->
+    <color name="buttonColor">#4A90E2</color>  <!-- Bleu pastel pour boutons -->
+    <color name="rippleEffect">#B3D1FF</color>  <!-- Bleu clair pour effet ripple -->
+    <color name="cardBackground">#FFFFFF</color>  <!-- Fond des cartes -->
+    <color name="cardBorderColor">#E0E0E0</color>  <!-- Bordures des cartes -->
+    <color name="blue_500">#2196F3</color> <!-- Bleu pastel -->
+    <color name="blue_700">#1976D2</color> <!-- Bleu plus foncé -->
+    <color name="gray_200">#F5F5F5</color> <!-- Gris clair -->
+    <color name="gray_400">#BDBDBD</color> <!-- Gris moyen -->
+
+    <!-- Couleurs manquantes utilisées dans les thèmes -->
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+</resources>
