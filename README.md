@@ -4,8 +4,10 @@
 ScanFlashLink est une application Android permettant de scanner des codes-barres en temps réel et d'envoyer les résultats à un serveur défini par l'utilisateur. Elle utilise **CameraX** pour la capture vidéo et **Google ML Kit** pour la reconnaissance des codes-barres.
 
 ---
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/aca5a9a2-c2a8-4fd6-b606-e71808f83569" alt="Description" width="300">
+</p>
 
-![ScanFlashLink](https://github.com/user-attachments/assets/aca5a9a2-c2a8-4fd6-b606-e71808f83569)
 
 ## 📌 Fonctionnalités
 
