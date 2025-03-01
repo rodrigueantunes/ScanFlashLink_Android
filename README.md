@@ -5,7 +5,7 @@ ScanFlashLink est une application Android permettant de scanner des codes-barres
 
 ---
 
-                              ![ScanFlashLink](https://github.com/user-attachments/assets/aca5a9a2-c2a8-4fd6-b606-e71808f83569)
+![ScanFlashLink](https://github.com/user-attachments/assets/aca5a9a2-c2a8-4fd6-b606-e71808f83569)
 
 ## 📌 Fonctionnalités
 
