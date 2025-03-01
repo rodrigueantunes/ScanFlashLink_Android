@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.scanflashlink"
+    namespace = "com.antunes.scanflashlink"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.scanflashlink"
+        applicationId = "com.antunes.scanflashlink"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
