@@ -60,10 +60,23 @@
         android:layout_marginBottom="18dp"
         android:backgroundTint="@color/cardBackground">
 
-        <android.view.TextureView
-            android:id="@+id/cameraPreview"
+        <!-- Utilisation d'un FrameLayout pour superposer la TextureView et l'overlay -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <android.view.TextureView
+                android:id="@+id/cameraPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.antunes.scanflashlink.BarcodeOverlayView
+                android:id="@+id/barcodeOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent" />
+
+        </FrameLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <!-- Résultat du scan -->

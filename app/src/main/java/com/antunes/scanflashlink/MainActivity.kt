@@ -24,6 +24,14 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import android.content.res.Configuration
+import android.graphics.Matrix
+import android.graphics.Rect
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+
+
+
 
 @OptIn(ExperimentalGetImage::class)
 class MainActivity : AppCompatActivity() {
@@ -79,7 +87,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Vérifie si la permission de la caméra est accordée **/
+
+
+
     private fun checkCameraPermission(): Boolean {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
@@ -115,18 +125,22 @@ class MainActivity : AppCompatActivity() {
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider { request ->
-                    val surfaceTexture = textureView.surfaceTexture
-                    if (surfaceTexture != null) {
-                        val surface = Surface(surfaceTexture)
-                        request.provideSurface(surface, ContextCompat.getMainExecutor(this)) {}
+            val preview = Preview.Builder()
+                .setTargetRotation(Surface.ROTATION_0) // ✅ Toujours en mode portrait
+                .build()
+                .also {
+                    it.setSurfaceProvider { request ->
+                        val surfaceTexture = textureView.surfaceTexture
+                        if (surfaceTexture != null) {
+                            val surface = Surface(surfaceTexture)
+                            request.provideSurface(surface, ContextCompat.getMainExecutor(this)) {}
+                        }
                     }
                 }
-            }
 
             val imageAnalyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .setTargetRotation(Surface.ROTATION_0) // ✅ On scanne toujours en mode portrait
                 .build()
                 .also {
                     it.setAnalyzer(cameraExecutor) { imageProxy ->
@@ -137,16 +151,30 @@ class MainActivity : AppCompatActivity() {
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageAnalyzer
-                )
+                cameraProvider.unbindAll() // Libération des ressources avant de réattacher la caméra
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
             } catch (exc: Exception) {
                 Log.e("CameraX", "Erreur de liaison de la caméra", exc)
             }
 
         }, ContextCompat.getMainExecutor(this))
     }
+
+    /**
+     * Nettoie le résultat d'un code-barres GS1.
+     * Cette fonction retire le préfixe "02" (s'il existe) et supprime les séparateurs FNC1.
+     */
+    fun parseGS1Barcode(raw: String): String {
+        var result = raw
+        // Exemple de nettoyage : retirer le préfixe "02" si présent
+        //if(result.startsWith("02")) {
+        //    result = result.substring(2)
+        //}
+        // Supprimer le caractère FNC1 (ASCII 29)
+        result = result.replace("\u001D", "")
+        return result
+    }
+
 
     @OptIn(ExperimentalGetImage::class)
     private fun processImage(imageProxy: ImageProxy) {
@@ -159,26 +187,74 @@ class MainActivity : AppCompatActivity() {
             val image = imageProxy.image
             if (image != null) {
                 val inputImage = InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)
-                val scanner = BarcodeScanning.getClient()
-
+                val options = BarcodeScannerOptions.Builder()
+                    .setBarcodeFormats(
+                        Barcode.FORMAT_AZTEC,
+                        Barcode.FORMAT_CODABAR,
+                        Barcode.FORMAT_CODE_128,
+                        Barcode.FORMAT_CODE_39,
+                        Barcode.FORMAT_CODE_93,
+                        Barcode.FORMAT_DATA_MATRIX,
+                        Barcode.FORMAT_EAN_13,
+                        Barcode.FORMAT_EAN_8,
+                        Barcode.FORMAT_ITF,
+                        Barcode.FORMAT_PDF417,
+                        Barcode.FORMAT_QR_CODE,
+                        Barcode.FORMAT_UPC_A,
+                        Barcode.FORMAT_UPC_E
+                    )
+                    .build()
+                val scanner = BarcodeScanning.getClient(options)
                 scanner.process(inputImage)
                     .addOnSuccessListener { barcodes ->
-                        for (barcode in barcodes) {
-                            barcode.rawValue?.let { scanResult ->
-                                isProcessing = true // Bloquer les scans successifs
-                                txtScanResult.text = "Scanné : $scanResult"
+                        if (barcodes.isEmpty()) {
+                            runOnUiThread {
+                                findViewById<BarcodeOverlayView>(R.id.barcodeOverlay).setBarcodeRect(null)
+                            }
+                        } else {
+                            for (barcode in barcodes) {
+                                barcode.rawValue?.let { rawResult ->
+                                    // Retirer le préfixe "]C1" s'il est présent
+                                    val withoutC1 = if (rawResult.startsWith("]C1")) {
+                                        rawResult.substring(3)
+                                    } else {
+                                        rawResult
+                                    }
+                                    // Appliquer le nettoyage GS1
+                                    val scanResult = parseGS1Barcode(withoutC1)
 
-                                sendToServer(scanResult)
+                                    isProcessing = true // Bloquer les scans successifs
 
-                                val bitmap = textureView.bitmap
-                                if (bitmap != null) {
-                                    showScannedScreen(bitmap)
+                                    // Récupérer et convertir la bounding box du code
+                                    val boundingBox = barcode.boundingBox
+                                    boundingBox?.let {
+                                        val scaleX = textureView.width.toFloat() / image.height.toFloat()
+                                        val scaleY = textureView.height.toFloat() / image.width.toFloat()
+                                        val mappedRect = Rect(
+                                            (it.left * scaleX).toInt(),
+                                            (it.top * scaleY).toInt(),
+                                            (it.right * scaleX).toInt(),
+                                            (it.bottom * scaleY).toInt()
+                                        )
+                                        runOnUiThread {
+                                            findViewById<BarcodeOverlayView>(R.id.barcodeOverlay)
+                                                .setBarcodeRect(mappedRect)
+                                        }
+                                    }
+
+                                    txtScanResult.text = "Scanné : $scanResult"
+                                    sendToServer(scanResult)
+
+                                    val bitmap = textureView.bitmap
+                                    if (bitmap != null) {
+                                        showScannedScreen(bitmap)
+                                    }
                                 }
                             }
                         }
                     }
                     .addOnFailureListener {
-                        Log.e("CameraX", "Erreur lors du scan du code-barres")
+                        Log.e("CameraX", "Erreur lors du scan du code-barres", it)
                     }
                     .addOnCompleteListener {
                         imageProxy.close()
@@ -190,6 +266,7 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
 
     private fun showScannedScreen(bitmap: Bitmap) {
         runOnUiThread {

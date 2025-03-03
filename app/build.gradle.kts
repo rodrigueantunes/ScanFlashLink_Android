@@ -11,8 +11,8 @@ android {
         applicationId = "com.antunes.scanflashlink"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "0.1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -31,7 +31,8 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
-        freeCompilerArgs += "-Xopt-in=androidx.camera.core.ExperimentalGetImage"
+        freeCompilerArgs += "-opt-in=androidx.camera.core.ExperimentalGetImage"
+
     }
 
     buildFeatures {
